@@ -103,6 +103,7 @@ public class SurfaceCover : MonoBehaviour
     {
         for (int i = 0; i < numOfBuildings; i++)
         {
+            
             if (sunCoordinates.x < buildingData[i, 0].x)
             {
                 if (sunCoordinates.y >= buildingData[i, 1].y)
@@ -133,10 +134,17 @@ public class SurfaceCover : MonoBehaviour
 
             }
         }
-        onTop = false;
-        sunRightmost = true;
-        print("sunRightmost" + sunRightmost);
-        return numOfBuildings-1;
+        if (sunCoordinates.y > buildingData[0, 1].y)
+        {
+            onTop = false;
+            sunRightmost = true;
+            print("sunRightmost" + sunRightmost);
+            return numOfBuildings - 1;
+        }
+        else
+        {
+            return -1;
+        }
     }
 
     float FindSlope(float x1, float x2, float y1, float y2)
