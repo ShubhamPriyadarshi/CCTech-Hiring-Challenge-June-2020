@@ -14,6 +14,7 @@ public class SurfaceCover : MonoBehaviour
     Vector2 sunCoordinates;
     Vector2[,] buildingData;
     bool onTop;
+    bool validSunPosition;
     int bisectionPoint;
     bool sunRightmost;
     bool leftPart;
@@ -37,9 +38,15 @@ public class SurfaceCover : MonoBehaviour
         bisectionPoint = Bisection();
         leftPart = bisectionPoint == 0 ? false : true;
         rightPart = bisectionPoint == numOfBuildings - 1 ? false : true;
-        surfaceValue = CalculateSurface();
-        OutputText.text = "Length of surface exposed to sunlight: " + Convert.ToString(surfaceValue);
-
+        if (bisectionPoint != -1)
+        {
+            surfaceValue = CalculateSurface();
+            OutputText.text = "Length of surface exposed to sunlight: " + Convert.ToString(surfaceValue);
+        }
+        else
+        {
+            OutputText.text = "Invalid Coordinates of the Sun ( It must be above the ground and not in between buildings )";
+        }
     }
     void SetSunOnClick()
     {
@@ -78,10 +85,18 @@ public class SurfaceCover : MonoBehaviour
             for (int i = 0; i < OldLines.Length; i++)
                 Destroy(OldLines[i]);
 
-            surfaceValue = CalculateSurface();
-
-            OutputText.text = "Length of surface exposed to sunlight " + Convert.ToString(surfaceValue);
-        }
+            
+            if(bisectionPoint!=-1)
+            {
+                surfaceValue = CalculateSurface();
+                OutputText.text = "Length of surface exposed to sunlight " + Convert.ToString(surfaceValue);
+            }
+            else
+            {
+                OutputText.text = "Invalid Coordinates of the Sun ( It must be above the ground and not in between buildings )";
+                ConsoleInputs.SetSun(new Vector2(-5000f, -5000f));
+            }
+    }
     }
 
     int Bisection()
@@ -90,17 +105,31 @@ public class SurfaceCover : MonoBehaviour
         {
             if (sunCoordinates.x < buildingData[i, 0].x)
             {
-                sunRightmost = false;
-                onTop = false;
-                print("OnTOP" + onTop);
-                return i;
+                if (sunCoordinates.y >= buildingData[i, 1].y)
+                {
+                    sunRightmost = false;
+                    onTop = false;
+                    print("OnTOP" + onTop);
+                    return i;
+                }
+                else
+                {
+                    return -1;
+                }
             }
             else if (sunCoordinates.x >= buildingData[i, 0].x && sunCoordinates.x <= buildingData[i, 3].x)
             {
-                sunRightmost = false;
-                onTop = true;
-                print("OnTOP" + onTop);
-                return i;
+                if (sunCoordinates.y > buildingData[i, 0].y)
+                {
+                    sunRightmost = false;
+                    onTop = true;
+                    print("OnTOP" + onTop);
+                    return i;
+                }
+                else
+                {
+                    return -1;
+                }
 
             }
         }
@@ -162,7 +191,7 @@ public class SurfaceCover : MonoBehaviour
             GameObject Line1 = Instantiate(LinesPrefab2);
             LineRenderer LineRend1 = Line1.GetComponent<LineRenderer>();
             LineRend1.positionCount = 2;
-            LineRend1.widthMultiplier = 0.7f;
+            LineRend1.widthMultiplier = 0.5f;
             LineRend1.SetPosition(0, linesArray[i, 0]);
             LineRend1.SetPosition(1, linesArray[i, 1]);
             distanceAlt += FindDistance(linesArray[i, 0], linesArray[i, 1]);
@@ -186,7 +215,7 @@ public class SurfaceCover : MonoBehaviour
             DrawLine(buildingData[bisectionPoint, 3], buildingData[bisectionPoint, 0]);
             surfaceValue += FindDistance(buildingData[bisectionPoint, 3], buildingData[bisectionPoint, 0]);
         }
-        if (bisectionPoint != 0) // START OF LEFT <<<<<<<<<<<<<<------------------------------------------------------------------------------------------
+        if (bisectionPoint != 0 || sunRightmost) // START OF LEFT <<<<<<<<<<<<<<------------------------------------------------------------------------------------------
         {
             sunLow = false;
             //m1 = FindSlope(sCor.x, buildingData[bisectionPoint, 0].x, sCor.y, buildingData[bisectionPoint, 0].y); ///try NOW

@@ -129,8 +129,7 @@ public class ConsoleInputs : MonoBehaviour
             }
         }
     }
-
-    public static void PolygonCoordinates()
+  public static void PolygonCoordinates()
     {
         for (int i = 0; i < PolygonData.numOfVertices; i++)
         {
@@ -142,5 +141,6 @@ public class ConsoleInputs : MonoBehaviour
         PointInPolygonStatic.SetActive(true);
         InstantiatePolygon.startFlag = true;
     }
+  
 
 }
