@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -45,7 +45,8 @@ public class SendButton : MonoBehaviour
                     case (0):
                         
 
-                        temp = temp.Replace("], [", " ").Replace("[", "").Replace("]", "");
+                        temp = temp.Replace("], [", " ").Replace("],", " ").Replace("[", "").Replace("]", "").Trim();
+                        temp = Regex.Replace(temp, @"\s+", " ");
                         string[] coordinates = temp.Split(' ');
                         numOfVertices = coordinates.Length;
                         ConsoleInputs.PolygonData.numOfVertices = numOfVertices;
@@ -114,7 +115,8 @@ public class SendButton : MonoBehaviour
                     case (0):
                         if (temp != "")
                         {
-                            temp = temp.Replace("]], [[", " ").Replace("],[", " ").Replace("[", "").Replace("]", "");
+                            temp = temp.Replace("]], [[", " ").Replace("]],", " ").Replace("],[", " ").Replace("[", "").Replace("]", "").Trim();
+                            temp = Regex.Replace(temp, @"\s+", " ");
                             string[] coordinates = temp.Split(' ');
                             if (coordinates.Length % 4 == 0 && coordinates.Length >=4) 
                             {
