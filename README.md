@@ -16,7 +16,7 @@ _This Repository contains the [solutions](https://github.com/ShubhamPriyadarshi/
 -   #### Problem 3 :  Calculate the coordinates of the chord of a circle.
     **Description**: Given the coordinates of the centre and radius of a circle, length of a line segment, clearance and angle of the perpendicular bisector of the line segment, calculate the coordinates of the chord of the circle formed located at the point of intersection between the lines perpendicular to the the line segment (originating from the ends of the line segment) and the circle.
     
-    The C# Program for the above problem can be found [here](https://github.com/ShubhamPriyadarshi/CCTech-Hiring-Challenge-June-2020/blob/master/ConsolePrograms/Challenge%202%20-%20Sunlight%20Building.cs)
+    The C# Program for the above problem can be found [here](https://github.com/ShubhamPriyadarshi/CCTech-Hiring-Challenge-June-2020/blob/master/ConsolePrograms/Challenge%203%20-%20Circle%20Chord%20Coordinates.cs)
     
 ## Unity3D WebGL Simulation
 ### A WebGL simulation of the challenges can be found [here](https://shubhampriyadarshi.github.io/CCTech.html).
