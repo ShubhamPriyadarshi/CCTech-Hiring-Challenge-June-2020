@@ -141,7 +141,7 @@ public class InstantiateCircle : MonoBehaviour
                 intersects = false;
             }
         }
-        else if ((angle>=90 && angle<270))
+        else if (angle>=90 && angle<270)
         {
             tempLine = GetLineCoordinates(lineSegment[0].x, lineSegment[0].y, circlePosD.x, circlePos.y, slope, radius); // for lower coordinate
             chordCoordinates[0] = new Vector2D(tempLine[1].x, tempLine[1].y);

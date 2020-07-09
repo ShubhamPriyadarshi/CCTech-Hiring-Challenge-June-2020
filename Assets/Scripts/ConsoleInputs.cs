@@ -68,7 +68,7 @@ public class ConsoleInputs : MonoBehaviour
         }
         else if (option == 3)
         {
-            currText.text = "Enter the values of x, y, radius, angle (in degrees), clearance (separated by comma)";
+            currText.text = "Enter the values of x, y, radius, angle (in degrees), clearance & line segment length (separated by comma)";
             defaultOptions3.SetActive(true);
         }
     }

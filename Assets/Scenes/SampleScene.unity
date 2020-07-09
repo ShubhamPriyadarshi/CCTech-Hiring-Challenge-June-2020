@@ -8181,6 +8181,7 @@ MonoBehaviour:
   defaultOptions3: {fileID: 1042737795}
   circleChords: {fileID: 593831616}
   resetButton: {fileID: 131058913}
+  OutputLeft: {fileID: 995497001}
   SimulationMode: {fileID: 1080368013}
   circleChordsCanvas: {fileID: 1055204863}
   input:
