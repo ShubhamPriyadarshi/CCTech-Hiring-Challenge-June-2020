@@ -2,24 +2,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InstantiateCircle : MonoBehaviour
 {
 
-    Mesh m;
-    MeshFilter mf;
-    public Vector2 circlePos;
-    public float radius;
-    public float angle;
-    public float clearance;
-    public float lineLength;
+    
+    GameObject circle;
+    public static Vector2 circlePos;
+    public static float radius;
+    public static float angle;
+    public static float clearance;
+    public static double lineLength;
 
-    List<Vector3> circleVerteices = new List<Vector3>();
-    List<Vector2> uvs = new List<Vector2>();
-    List<int> triangles = new List<int>();
-    public GameObject myPrefab;
+    
+    public GameObject circlePrefab;
     public GameObject linesPrefab;
+    public GameObject P, Q;
+    public Text outputText;
     public Material [] mat;
+
+    public InputField[] input;
 
     class Vector2D 
     {
@@ -33,27 +36,50 @@ public class InstantiateCircle : MonoBehaviour
         }
     }
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
-        GetComponent<MeshRenderer>().material = mat[0];
-        mf = GetComponent<MeshFilter>();
+        if (lineLength == 2 * radius)
+            lineLength -= 1E-14;
+        circle = Instantiate(circlePrefab, this.transform, true);
+        circle.GetComponent<MeshRenderer>().material = mat[0];
+        Mesh m;
+        MeshFilter mf;
+        mf = circle.GetComponent<MeshFilter>();
         m = new Mesh();
         mf.mesh = m;
-        drawCircle();
-        DrawLines();
-        //GameObject circle;
-        //circle = Instantiate(myPrefab, this.transform, true);
-        //Mesh mesh = new Mesh(); 
-        //mesh = GenerateCircleMesh();
-        //circle.GetComponent<MeshFilter>().mesh = mesh;
-        //circle.GetComponent<MeshRenderer>().material = mat;
+        drawCircle(m);
+        circle.transform.position = circlePos;
+        GetChordCoordinates();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnSubmit(Vector2 c, float r, float a, float cl, double ll)
     {
-        
+
+        circlePos = c;
+        radius = r;
+        angle = a;
+        clearance = cl;
+        lineLength = ll;
+        if (lineLength == 2 * radius)
+            lineLength -= 1E-14;
+
+        GameObject[] OldLines = GameObject.FindGameObjectsWithTag("Lines");
+        for (int i = 0; i < OldLines.Length; i++)
+            Destroy(OldLines[i]);
+        Destroy(circle);
+        circle = Instantiate(circlePrefab, this.transform, true);
+        circle.GetComponent<MeshRenderer>().material = mat[0];
+        Mesh m;
+        MeshFilter mf;
+        mf = circle.GetComponent<MeshFilter>();
+        m = new Mesh();
+        mf.mesh = m;
+        drawCircle(m);
+        circle.transform.position = circlePos;
+        GetChordCoordinates();
+
     }
+
 
     void DrawLine(Vector2D start, Vector2D end, Material mat, float widthMultiplier, int sortingOrder = 2)
     {
@@ -70,8 +96,13 @@ public class InstantiateCircle : MonoBehaviour
     }
 
 
-    void DrawLines()
+    void GetChordCoordinates()
     {
+        bool intersects = true;
+
+        if (angle == 0)
+            angle = 360;
+
         double angleRad = angle * Mathf.PI / 180f;
         double circlepoint_x = circlePos.x + ((radius) * Math.Cos(angleRad));
         double mid_x = circlePos.x + ((radius+clearance) * Math.Cos(angleRad));
@@ -97,21 +128,55 @@ public class InstantiateCircle : MonoBehaviour
         Vector2D[] chordCoordinates = new Vector2D[2];
         Vector2D[] tempLine;
         Debug.Log("LS 1 B" + lineSegment[0].x);
-        tempLine = GetLineCoordinates(lineSegment[0].x,lineSegment[0].y, circlePosD.x, circlePos.y, slope, radius); // for lower coordinate
-        chordCoordinates[0] = new Vector2D(tempLine[0].x, tempLine[0].y);
-        Debug.Log("LS 1" + lineSegment[0].x);
-        tempLine = GetLineCoordinates(lineSegment[1].x, lineSegment[1].y, circlePosD.x, circlePos.y, slope, radius); // for upper coordinate
-        chordCoordinates[1] = new Vector2D(tempLine[0].x, tempLine[0].y);
+        
+        
+        if ((angle < 90 && angle >0)||angle>=270)
+        {
+            tempLine = GetLineCoordinates(lineSegment[0].x, lineSegment[0].y, circlePosD.x, circlePos.y, slope, radius); // for lower coordinate
+            chordCoordinates[0] = new Vector2D(tempLine[0].x, tempLine[0].y);
+            tempLine = GetLineCoordinates(lineSegment[1].x, lineSegment[1].y, circlePosD.x, circlePos.y, slope, radius); // for upper coordinate
+            chordCoordinates[1] = new Vector2D(tempLine[0].x, tempLine[0].y);
+            if (chordCoordinates[0].x == 0 && chordCoordinates[0].y == 0 && chordCoordinates[1].x == 0 && chordCoordinates[1].y == 0)
+            {
+                intersects = false;
+            }
+        }
+        else if ((angle>=90 && angle<270))
+        {
+            tempLine = GetLineCoordinates(lineSegment[0].x, lineSegment[0].y, circlePosD.x, circlePos.y, slope, radius); // for lower coordinate
+            chordCoordinates[0] = new Vector2D(tempLine[1].x, tempLine[1].y);
+            tempLine = GetLineCoordinates(lineSegment[1].x, lineSegment[1].y, circlePosD.x, circlePos.y, slope, radius); // for upper coordinate
+            chordCoordinates[1] = new Vector2D(tempLine[1].x, tempLine[1].y);
+            Debug.Log("CHORDS DEBUG:            "+chordCoordinates[0].x +" "+ chordCoordinates[0].y + " " + chordCoordinates[1].x + " " + chordCoordinates[1].y);
+            if (chordCoordinates[0].x == 0 && chordCoordinates[0].y == 0 && chordCoordinates[1].x ==0  && chordCoordinates[1].y == 0)
+            {
+                intersects = false;
+            }
+
+        }
         Debug.Log(chordCoordinates[0].x + " " + chordCoordinates[0].y);
-        Debug.Log(chordCoordinates[1].y + " " + chordCoordinates[1].y);
+        Debug.Log(chordCoordinates[1].x + " " + chordCoordinates[1].y);
+        if (intersects)
+        {
+            P.SetActive(true);
+            Q.SetActive(true);
+            P.transform.position = new Vector3(Convert.ToSingle(chordCoordinates[0].x), Convert.ToSingle(chordCoordinates[0].y), 0);
+            Q.transform.position = new Vector3(Convert.ToSingle(chordCoordinates[1].x), Convert.ToSingle(chordCoordinates[1].y), 0);
+            DrawLine(lineSegment[0], chordCoordinates[0], mat[4], 0.05f);
+            // DrawLine(chordCoordinates[0], circlePosD, mat[1], 0.07f);
+            DrawLine(lineSegment[1], chordCoordinates[1], mat[4], 0.05f);
+            //DrawLine(chordCoordinates[1], circlePosD, mat[1], 0.07f);
 
-        DrawLine(lineSegment[0], chordCoordinates[0],mat[4], 0.05f);
-       // DrawLine(chordCoordinates[0], circlePosD, mat[1], 0.07f);
-        DrawLine(lineSegment[1], chordCoordinates[1],mat[4], 0.05f);
-        //DrawLine(chordCoordinates[1], circlePosD, mat[1], 0.07f);
-
-        DrawLine(chordCoordinates[0], chordCoordinates[1], mat[5], 0.12f, 3);//chord
-
+            DrawLine(chordCoordinates[0], chordCoordinates[1], mat[5], 0.12f, 3);//chord
+            outputText.text = "Output: Values of P:"+ "( "+Math.Round(P.transform.position.x,3)+", "+ Math.Round(P.transform.position.y,3)+" )" + "& Q:"+ "("+ Math.Round(Q.transform.position.x,3)+", "+ Math.Round(Q.transform.position.y,3)+")" ;
+        }
+        else
+        {
+            P.SetActive(false);
+            Q.SetActive(false);
+            outputText.text=  "Output: Lines do not interesect the circle";
+        
+        }
 
 
     }
@@ -123,7 +188,9 @@ public class InstantiateCircle : MonoBehaviour
         double c = y - m * x;
         Debug.Log(c);
         double d = (Math.Pow(r, 2) * (1 + Math.Pow(m, 2)) - Math.Pow((b - m * a - c), 2));
-        Debug.Log(d);
+        Debug.Log("VALUE OF D: "+d);
+        if (d < 0)
+            return lineSegment;
         lineSegment[0].x = (a + b * m - c * m + Math.Sqrt(d)) / (1 + Math.Pow(m, 2));//lower x
         lineSegment[1].x = (a + b * m - c * m - Math.Sqrt(d)) / (1 + Math.Pow(m, 2));
         lineSegment[0].y = (c + a * m + b * Math.Pow(m, 2) + m * Math.Sqrt(d)) / (1 + Math.Pow(m, 2));// lower y
@@ -134,16 +201,17 @@ public class InstantiateCircle : MonoBehaviour
         return lineSegment;
     }
 
-
-
-    void drawCircle()
+    void drawCircle(Mesh m)
     {
+        List<Vector3> circleVertices = new List<Vector3>();
+        List<Vector2> uvs = new List<Vector2>();
+        List<int> triangles = new List<int>();
         float val = Mathf.PI / 180f;//one degree = val radians
         //float radius = 1f;
         int deltaAngle = 2;
 
         Vector3 center = Vector3.zero;
-        circleVerteices.Add(center);
+        circleVertices.Add(center);
         uvs.Add(new Vector2(0.5f, 0.5f));
         int triangleCount = 0;
 
@@ -151,7 +219,7 @@ public class InstantiateCircle : MonoBehaviour
         float y1 = radius * Mathf.Sin(0);
         float z1 = 0;
         Vector3 point1 = new Vector3(x1, y1, z1);
-        circleVerteices.Add(point1);
+        circleVertices.Add(point1);
         uvs.Add(new Vector2((x1 + radius) / 2 * radius, (y1 + radius) / 2 * radius));
 
         for (int i = 0; i < 359; i = i + deltaAngle)
@@ -161,7 +229,7 @@ public class InstantiateCircle : MonoBehaviour
             float z2 = 0;
             Vector3 point2 = new Vector3(x2, y2, z2);
 
-            circleVerteices.Add(point2);
+            circleVertices.Add(point2);
 
             uvs.Add(new Vector2((x2 + radius) / 2 * radius, (y2 + radius) / 2 * radius));
 
@@ -176,10 +244,10 @@ public class InstantiateCircle : MonoBehaviour
 
 
 
-        m.vertices = circleVerteices.ToArray();
+        m.vertices = circleVertices.ToArray();
         m.triangles = triangles.ToArray();
         m.uv = uvs.ToArray();
-        this.transform.position = circlePos;
+        
 
     }
 }

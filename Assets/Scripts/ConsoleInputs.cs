@@ -36,6 +36,7 @@ public class ConsoleInputs : MonoBehaviour
 
     public GameObject defaultOptions1;
     public GameObject defaultOptions2;
+    public GameObject defaultOptions3;
     public static GameObject SunlightBuildingStatic;
     public static GameObject PointInPolygonStatic;
     public static GameObject SunStatic;
@@ -56,9 +57,20 @@ public class ConsoleInputs : MonoBehaviour
         currText.text = option > 1 ? "Enter the values of [ N x 4 x 2 ] array consisting the coordinates of N buildings in 2D space, where N is the number of buildings" : "Enter the values of [N x 2] array consisting the coordinates of N vertices of a polygon in 2D space";
 
         if (option == 1)
+        {
+            currText.text = "Enter the values of [N x 2] array consisting the coordinates of N vertices of a polygon in 2D space";
             defaultOptions1.SetActive(true);
-        else
+        }
+        else if (option == 2)
+        {
+            currText.text = "Enter the values of [ N x 4 x 2 ] array consisting the coordinates of N buildings in 2D space, where N is the number of buildings";
             defaultOptions2.SetActive(true);
+        }
+        else if (option == 3)
+        {
+            currText.text = "Enter the values of x, y, radius, angle (in degrees), clearance (separated by comma)";
+            defaultOptions3.SetActive(true);
+        }
     }
 
     public static void DrawBuilding()

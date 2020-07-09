@@ -16,8 +16,15 @@ public class SendButton : MonoBehaviour
     public GameObject Buildings;
     public GameObject defaultOptions1;
     public GameObject defaultOptions2;
+    public GameObject defaultOptions3;
+    public GameObject circleChords;
+
     public GameObject resetButton;
+    public GameObject OutputLeft;
     public GameObject SimulationMode;
+    public GameObject circleChordsCanvas;
+    public InputField[] input;
+
 
     void Start()
     {
@@ -62,27 +69,7 @@ public class SendButton : MonoBehaviour
                             currText.text = "Error: Wrong number of coordinates ( enter atleast three coordinates ) or wrong format, try again ( Tip: Use the format given in default options )";
                             it--;
                         }
-                        
-                        //else if (temp == "")
-                        //{
-                        //    if (7 == numOfVertices)
-                        //    {
-                        //        {
-                        //            string defaultOption = "3.36,6.79 3.49,4.70 1.03,3.44 2.18,1.19 3.72,3.78 6.00,1.78 6.86,3.89";
-
-                        //            print(defaultOption);
-                        //            ConsoleInputs.PolygonData.polygonDataRaw = defaultOption.Split(' ');
-                        //            defaultOptions1.SetActive(false);
-                        //        }
-                        //    }
-                        //    else
-                        //    {
-                        //        currText.text = "Error: Wrong number of coordinates or wrong format, enter coordinates of " + numOfVertices + " Vertices";
-                        //        it--;
-                        //    }
-                        //}
-                        // Debug.Log(ConsoleInputs.PolygonData.polygonDataRaw);
-
+                      
 
                         break;
 
@@ -170,49 +157,45 @@ public class SendButton : MonoBehaviour
 
 
                 } break;
-                
+            case (3):
+                temp = temp.Replace("], [", " ").Replace("],", " ").Replace("[", "").Replace("]", "").Trim();
+                temp = Regex.Replace(temp, @"\s+", " ");
+                string[] CircleDataRaw = temp.Split(',');
+                float X, Y;
+                X = Convert.ToSingle(CircleDataRaw[0]);
+                Y = Convert.ToSingle(CircleDataRaw[1]);
+                InstantiateCircle.circlePos = new Vector2(X, Y);
+                InstantiateCircle.radius = Convert.ToSingle(CircleDataRaw[2]);
+                InstantiateCircle.angle = Convert.ToSingle(CircleDataRaw[3]);
+                InstantiateCircle.clearance = Convert.ToSingle(CircleDataRaw[4]);
+                InstantiateCircle.lineLength = Convert.ToDouble(CircleDataRaw[5]);
+
+
+                if (CircleDataRaw.Length == 6)
+                {
+                    it++;
+                    input[0].text = X + ", " + Y;
+                    input[1].text = CircleDataRaw[2];
+                    input[2].text = CircleDataRaw[3];
+                    input[3].text = CircleDataRaw[4];
+                    input[4].text = CircleDataRaw[5];
+                    SimulationMode.SetActive(true);
+                    IO.SetActive(false);
+                    OutputLeft.SetActive(false);
+                    resetButton.SetActive(true);
+                    circleChords.SetActive(true);
+                    circleChordsCanvas.SetActive(true);
+
+                }
+                else
+                {
+                    currText.text = "Error: Wrong format, use the format from the given in the default option";
+                    it--;
+                }
+                break;
+
+
         } it++;
     }
 }
 
-//case (1):
-                        
-//                        currText.text = "Enter the coordinates of the light source ( X and Y separated by a comma) ( Default [1,1] )";
-//                         numOfBuildings = ConsoleInputs.BuildingData.numOfBuildings;
-//                        if (temp != "")
-//                        {
-//                            temp = temp.Replace("]], [[", " ").Replace("],[", " ").Replace("[", "").Replace("]", "");
-//                            print(temp);
-//                            string[] coordinates = temp.Split(' ');
-//                            if (coordinates.Length == numOfBuildings * 4)
-//                            {
-//                                ConsoleInputs.BuildingData.buildingDataRaw = coordinates;
-//                                defaultOptions2.SetActive(false);
-//                            }
-//                            else
-//                            {
-//                                currText.text = "Error: Wrong number of Coordinates or Wrong format, enter coordinates of " + numOfBuildings + " Building(s)";
-//                                it--;
-//                            }
-
-//                        }
-//                        else if (temp == "")
-//                        {
-//                            string defaultOption = "[[4,0],[4,-7],[7,-7],[7,0]], [[0.4,-2],[0.4,-7],[2.5,-7],[2.5,-2]], [[8.5,2],[8.5,-7],[11.5,-7],[11.5,2]], [[-11.5,5],[-11.5,-7],[-8.5,-7],[-8.5,5]], [[-7,-3],[-7,-7],[-4,-7],[-4,-3]], [[-20.5,5],[-20.5,-7],[-15,-7],[-15,5]], [[15.5,2],[15.5,-7],[20.5,-7],[20.5,2]]]";
-//                            defaultOption = defaultOption.Replace("]], [[", " ").Replace("],[", " ").Replace("[", "").Replace("]", "");
-//                            print(defaultOption);
-//                            if (28 == numOfBuildings * 4)
-//                            {
-//                                ConsoleInputs.BuildingData.buildingDataRaw = defaultOption.Split(' ');
-//                                defaultOptions2.SetActive(false);
-//                            }
-
-//                            else
-//                            {
-//                                currText.text = "Error: Wrong number of Coordinates or Wrong format, enter coordinates of " + numOfBuildings + " Building(s)";
-//                                it--;
-//                            }
-//                            //Debug.Log(ConsoleInputs.BuildingData.buildingDataRaw);
-//                        }
-
-//                        break;
