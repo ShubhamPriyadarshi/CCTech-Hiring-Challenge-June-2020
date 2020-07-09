@@ -20,7 +20,7 @@ _This Repository contains the [solutions](https://github.com/ShubhamPriyadarshi/
    <img width="256" height="256" src="https://i.imgur.com/aCdumxr.png">
    </p>
     
-    The C# Program for the above problem can be found [here](https://github.com/ShubhamPriyadarshi/CCTech-Hiring-Challenge-June-2020/blob/master/ConsolePrograms/Challenge%203%20-%20Circle%20Chord%20Coordinates.cs)
+   The C# Program for the above problem can be found [here](https://github.com/ShubhamPriyadarshi/CCTech-Hiring-Challenge-June-2020/blob/master/ConsolePrograms/Challenge%203%20-%20Circle%20Chord%20Coordinates.cs)
     
 ## Unity3D WebGL Simulation
 ### A WebGL simulation of the challenges can be found [here](https://shubhampriyadarshi.github.io/CCTech.html).
