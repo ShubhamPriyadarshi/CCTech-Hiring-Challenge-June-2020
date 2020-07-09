@@ -15,7 +15,6 @@ public class CircleChord
     {
         public double x;
         public double y;
-
         public Vector2D(double x, double y)
         {
             this.x = x;
@@ -23,7 +22,7 @@ public class CircleChord
         }
     }
 
-     static public void Main()
+    static public void Main()
     {
         CircleChord C = new CircleChord();
         string[] rawInputData = C.ReadInputData();
@@ -34,8 +33,6 @@ public class CircleChord
             C.lineLength -= 1E-14;
 
         C.GetChordCoordinates();
-      
-        
     }
 
     string[] ReadInputData()
@@ -71,7 +68,7 @@ public class CircleChord
         lineLength = Convert.ToDouble(rawString[5]);
 
     }
-        void GetChordCoordinates()
+    void GetChordCoordinates()
     {
         bool intersects = true;
 
@@ -91,7 +88,7 @@ public class CircleChord
         double slope = (mid_y - circlePos.y) / (mid_x - circlePos.x);
         double slopeInverse = -1 / slope;
 
-        //
+
         Vector2D[] lineSegment = GetLineCoordinates(mid_x, mid_y, mid_x, mid_y, slopeInverse, lineLength / 2);
         Vector2D[] chordCoordinates = new Vector2D[2];
         Vector2D[] tempLine;
@@ -117,7 +114,7 @@ public class CircleChord
             chordCoordinates[1] = new Vector2D(tempLine[1].x, tempLine[1].y);
             if (chordCoordinates[0].x == 0 && chordCoordinates[0].y == 0 && chordCoordinates[1].x == 0 && chordCoordinates[1].y == 0)
             {
-               
+
                 intersects = false;
             }
 
@@ -133,8 +130,6 @@ public class CircleChord
             WriteLine("Output: Lines do not interesect the circle");
 
         }
-
-
     }
 
     Vector2D[] GetLineCoordinates(double x, double y, double a, double b, double m, double r)
@@ -150,9 +145,6 @@ public class CircleChord
         lineSegment[0].y = (c + a * m + b * Math.Pow(m, 2) + m * Math.Sqrt(d)) / (1 + Math.Pow(m, 2));// lower y
         lineSegment[1].y = (c + a * m + b * Math.Pow(m, 2) - m * Math.Sqrt(d)) / (1 + Math.Pow(m, 2));
 
-
-
         return lineSegment;
     }
-
 }
