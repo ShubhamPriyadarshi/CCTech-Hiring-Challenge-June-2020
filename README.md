@@ -19,7 +19,6 @@ _This Repository contains the [solutions](https://github.com/ShubhamPriyadarshi/
     <p align="center">
     <img width="256" height="256" src="https://i.imgur.com/8BExf6U.png">
      <br>
-     <br>
      Find the coorinates of point P & Q
      <br>
     </p>
